@@ -19,7 +19,7 @@
 
 ![permit.png](assets%2Fpermit.png)
 
-5. Click Open Anyway , and Enter password 
+5. Click Open Anyway , and Enter password
 
 ![approve.png](assets%2Fapprove.png)
 
@@ -35,12 +35,16 @@
 
 ![install.png](assets%2Finstall.png)
 
-9. Wait , It is Installing 
+9. Wait , It is Installing
 
 ![installing.png](assets%2Finstalling.png)
 
-10. Success 
+10. Success
 
 ![success.png](assets%2Fsuccess.png)
 
 </details>
+
+## TODO
+
+- Windows Installer
