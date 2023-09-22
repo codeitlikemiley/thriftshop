@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Get the real user who initiated the script
+REAL_USER=${SUDO_USER:-$USER}
+
+# Get the home directory of the user who initiated the installer
+USER_HOME=$(eval echo ~$REAL_USER)
+
+# Function to determine the OS and architecture
+detect_os_arch() {
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		echo "darwin-universal"
+	else
+		echo "Unsupported OS"
+		exit 1
+	fi
+}
+
+# Function to download Hugo
+download_hugo() {
+	local version="$1"
+	local is_extended="$2"
+	local os_arch="$(detect_os_arch)"
+	local os_type="${os_arch%-*}"
+	local arch_type="${os_arch#*-}"
+
+	local base_url="https://github.com/gohugoio/hugo/releases/download/v${version}"
+
+	# Determine file extension and whether an extended version is needed
+	local ext="tar.gz"
+	local file_prefix="hugo"
+	if [[ "$is_extended" == "true" ]]; then
+		file_prefix="hugo_extended"
+	fi
+
+	# Construct download URL
+	local download_url="${base_url}/${file_prefix}_${version}_${os_type}-${arch_type}.${ext}"
+
+	# Download and extract Hugo
+	echo "Downloading Hugo from $download_url"
+	curl -L -o "hugo.${ext}" "$download_url"
+
+	# Create ~/.local/bin if it doesn't exist
+	if [ ! -d "$USER_HOME/.local/bin" ]; then
+		mkdir -p "$USER_HOME/.local/bin"
+	fi
+
+	# Extract, move, and change ownership of Hugo
+	tar -xzf "hugo.${ext}"
+	mv hugo "$USER_HOME/.local/bin/hugo"
+	chown $REAL_USER:$REAL_USER "$USER_HOME/.local/bin/hugo"
+
+	# Remove artifacts
+	rm -f "hugo.${ext}"
+
+	echo "Hugo downloaded, extracted, and moved to $USER_HOME/.local/bin/hugo."
+}
+
+# Check for at least one argument (the version)
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 <version> [--extended]"
+	exit 1
+fi
+
+# Check for extended flag
+if [[ "$2" == "--extended" ]]; then
+	download_hugo "$1" "true"
+else
+	download_hugo "$1" "false"
+fi

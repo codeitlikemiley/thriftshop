@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Get the username of the user who initiated the installer
+REAL_USER=$USER
+
+# Get the home directory of the user who initiated the installer
+USER_HOME=$(eval echo ~$REAL_USER)
+
+# remove old symlink if it exists
+if [ -f "$USER_HOME/.local/bin/thriftshop" ]; then
+	rm $USER_HOME/.local/bin/thriftshop
+fi
+
+# Create the symlink in ~/.local/bin
+ln -s "/Applications/Thriftshop.app/Contents/MacOS/thriftshop" "$USER_HOME/.local/bin/thriftshop"

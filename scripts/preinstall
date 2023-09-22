@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Get the real user who initiated the script
+REAL_USER=$USER
+# Get the home directory of the user who initiated the installer
+USER_HOME=$(eval echo ~$REAL_USER)
+
+# remove old hugo if it exists
+if [ -d "$USER_HOME/.local/bin/hugo" ]; then
+	rm -rf "$USER_HOME/.local/bin/hugo"
+fi
+
+# remove old app if it exists
+if [ -d "/Applications/Thrifshop.app" ]; then
+	rm -rf "/Applications/Thriftshop.app"
+fi
+
+# This is updated everytime we have a new release
+./hugo-install 0.118.2 --extended
